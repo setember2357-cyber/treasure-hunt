@@ -16,8 +16,157 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: white;
+            overflow-x: hidden;
         }
-        
+
+        /* 오프닝 화면 스타일 */
+        .opening-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10000;
+            animation: fadeOut 1s ease-in-out 6s forwards;
+        }
+
+        .school-title {
+            font-size: 4em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            transform: translateY(50px) scale(0.5);
+            animation: schoolAppear 2s ease-out 0.5s forwards;
+            margin-bottom: 40px;
+            letter-spacing: 5px;
+        }
+
+        .club-title {
+            font-size: 6em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transform: translateY(50px) rotateX(90deg);
+            animation: clubAppear 2s ease-out 2.5s forwards, gradientMove 3s ease-in-out 2.5s infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            letter-spacing: 8px;
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 6s linear infinite;
+        }
+
+        .glow-effect {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.3) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite, rotate 10s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .lightning {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, #fff, transparent);
+            opacity: 0;
+            animation: lightning 0.1s ease-in-out 4s infinite;
+        }
+
+        @keyframes schoolAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.5);
+            }
+            50% {
+                opacity: 0.7;
+                transform: translateY(0) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes clubAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) rotateX(90deg);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(-10px) rotateX(0deg) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg) scale(1);
+            }
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.8; }
+        }
+
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes lightning {
+            0%, 90%, 100% { opacity: 0; }
+            5%, 85% { opacity: 1; }
+        }
+
+        /* 기존 스타일들 */
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -221,6 +370,16 @@
             .card {
                 padding: 20px;
             }
+
+            .school-title {
+                font-size: 2.5em;
+                letter-spacing: 2px;
+            }
+
+            .club-title {
+                font-size: 3.5em;
+                letter-spacing: 4px;
+            }
         }
         
         .celebration {
@@ -245,75 +404,103 @@
             0% { transform: translateY(-100vh) rotate(0deg); }
             100% { transform: translateY(100vh) rotate(360deg); }
         }
+
+        /* 메인 화면 초기 상태 */
+        .main-content {
+            opacity: 0;
+            animation: mainFadeIn 1s ease-in-out 6.5s forwards;
+        }
+
+        @keyframes mainFadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 로그인 화면 -->
-        <div id="loginScreen">
-            <div class="header">
-                <h1>🏆 지금 부터 게임을 시작합니다</h1>
-                <p>각 번호가 부여된 큐알 카드를 찾아 퀴즈에 도전하세요!</p>
-            </div>
-            
-            <div class="card">
-                <div class="login-form">
-                    <div class="input-group">
-                        <label for="userName">참가자 이름</label>
-                        <input type="text" id="userName" placeholder="이름을 입력하세요">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="stationId">스테이션 번호</label>
-                        <input type="number" id="stationId" placeholder="NFC 카드의 번호 (1-10)" min="1" max="10">
-                    </div>
-                    
-                    <button class="btn" onclick="startQuiz()">퀴즈 시작!</button>
-                </div>
-            </div>
-        </div>
+    <!-- 오프닝 화면 -->
+    <div class="opening-screen" id="openingScreen">
+        <div class="particles" id="particles"></div>
+        <div class="glow-effect"></div>
+        
+        <div class="lightning" style="left: 20%; animation-delay: 4s;"></div>
+        <div class="lightning" style="left: 40%; animation-delay: 4.2s;"></div>
+        <div class="lightning" style="left: 60%; animation-delay: 4.1s;"></div>
+        <div class="lightning" style="left: 80%; animation-delay: 4.3s;"></div>
+        
+        <div class="school-title">인제고등학교</div>
+        <div class="club-title">REGISTER</div>
+    </div>
 
-        <!-- 퀴즈 화면 -->
-        <div id="quizScreen" class="quiz-container">
-            <div class="header">
-                <h2>🎯 퀴즈 도전</h2>
-                <div class="timer" id="timer">30</div>
-                <div class="current-rank" id="currentRank">현재 순위: -위</div>
-            </div>
-            
-            <div class="card">
-                <div class="progress-bar">
-                    <div class="progress" id="progress"></div>
+    <!-- 메인 컨텐츠 -->
+    <div class="main-content">
+        <div class="container">
+            <!-- 로그인 화면 -->
+            <div id="loginScreen">
+                <div class="header">
+                    <h1>🏆 지금 부터 게임을 시작합니다</h1>
+                    <p>각 번호가 부여된 큐알 카드를 찾아 퀴즈에 도전하세요!</p>
                 </div>
                 
-                <div class="question" id="question"></div>
-                
-                <div class="options" id="options"></div>
-                
-                <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">다음 문제</button>
-                <button class="btn" id="finishBtn" onclick="showResults()" style="display: none;">결과 보기</button>
+                <div class="card">
+                    <div class="login-form">
+                        <div class="input-group">
+                            <label for="userName">참가자 이름</label>
+                            <input type="text" id="userName" placeholder="이름을 입력하세요">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="stationId">스테이션 번호</label>
+                            <input type="number" id="stationId" placeholder="NFC 카드의 번호 (1-10)" min="1" max="10">
+                        </div>
+                        
+                        <button class="btn" onclick="startQuiz()">퀴즈 시작!</button>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- 결과 및 순위 화면 -->
-        <div id="resultsScreen" class="leaderboard hidden">
-            <div class="header">
-                <h2>🏆 최종 결과</h2>
+            <!-- 퀴즈 화면 -->
+            <div id="quizScreen" class="quiz-container">
+                <div class="header">
+                    <h2>🎯 퀴즈 도전</h2>
+                    <div class="timer" id="timer">30</div>
+                    <div class="current-rank" id="currentRank">현재 순위: -위</div>
+                </div>
+                
+                <div class="card">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    
+                    <div class="question" id="question"></div>
+                    
+                    <div class="options" id="options"></div>
+                    
+                    <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">다음 문제</button>
+                    <button class="btn" id="finishBtn" onclick="showResults()" style="display: none;">결과 보기</button>
+                </div>
             </div>
-            
-            <div class="card">
-                <div class="score-display" id="finalScore"></div>
-                <div class="current-rank" id="finalRank"></div>
-            </div>
-            
-            <div class="card">
-                <h3 style="margin-bottom: 20px;">🏅 실시간 순위표</h3>
-                <div id="leaderboardList"></div>
-            </div>
-            
-            <div class="card">
-                <button class="btn" onclick="restartGame()">다시 도전하기</button>
-                <button class="btn" onclick="showLeaderboard()" style="margin-left: 10px;">순위표 새로고침</button>
+
+            <!-- 결과 및 순위 화면 -->
+            <div id="resultsScreen" class="leaderboard hidden">
+                <div class="header">
+                    <h2>🏆 최종 결과</h2>
+                </div>
+                
+                <div class="card">
+                    <div class="score-display" id="finalScore"></div>
+                    <div class="current-rank" id="finalRank"></div>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 20px;">🏅 실시간 순위표</h3>
+                    <div id="leaderboardList"></div>
+                </div>
+                
+                <div class="card">
+                    <button class="btn" onclick="restartGame()">다시 도전하기</button>
+                    <button class="btn" onclick="showLeaderboard()" style="margin-left: 10px;">순위표 새로고침</button>
+                </div>
             </div>
         </div>
     </div>
@@ -321,6 +508,33 @@
     <div class="celebration" id="celebration"></div>
 
     <script>
+        // 오프닝 파티클 효과 생성
+        function createOpeningParticles() {
+            const particles = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        // 페이지 로드 시 오프닝 효과 시작
+        window.addEventListener('load', function() {
+            createOpeningParticles();
+            
+            // 6초 후 오프닝 화면 완전 제거
+            setTimeout(() => {
+                const openingScreen = document.getElementById('openingScreen');
+                if (openingScreen) {
+                    openingScreen.remove();
+                }
+            }, 7000);
+        });
+
         // 게임 데이터
         const quizData = {
             1: [
@@ -638,117 +852,7 @@
             document.getElementById('resultsScreen').classList.remove('hidden');
             document.getElementById('resultsScreen').style.display = 'block';
 
-            const currentUserData = gameData.find(user => user.name === currentUser);
-            document.getElementById('finalScore').textContent = 
-                `스테이션 ${currentStation} 점수: ${score}점 | 총점: ${currentUserData?.totalScore || 0}점`;
-
-            const sortedUsers = [...gameData].sort((a, b) => {
-                if (b.totalScore !== a.totalScore) {
-                    return b.totalScore - a.totalScore;
-                }
-                return a.timestamp - b.timestamp;
-            });
-
-            const currentUserRank = sortedUsers.findIndex(user => user.name === currentUser) + 1;
-            document.getElementById('finalRank').textContent = `최종 순위: ${currentUserRank}위`;
-
-            showLeaderboard();
-
-            if (currentUserRank === 1) {
-                createMegaConfetti();
-            }
-        }
-
-        // 리더보드 표시
-        function showLeaderboard() {
-            const sortedUsers = [...gameData].sort((a, b) => {
-                if (b.totalScore !== a.totalScore) {
-                    return b.totalScore - a.totalScore;
-                }
-                return a.timestamp - b.timestamp;
-            });
-
-            const leaderboardList = document.getElementById('leaderboardList');
-            leaderboardList.innerHTML = '';
-
-            sortedUsers.slice(0, 10).forEach((user, index) => {
-                const item = document.createElement('div');
-                item.className = 'leaderboard-item';
-                
-                const rank = index + 1;
-                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}위`;
-                
-                item.innerHTML = `
-                    <span>${medal} ${user.name}</span>
-                    <span>${user.totalScore}점 (${user.completedStations.length}개 완료)</span>
-                `;
-                leaderboardList.appendChild(item);
-            });
-        }
-
-        // 게임 재시작
-        function restartGame() {
-            document.getElementById('resultsScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'block';
-            
-            // 입력 필드 초기화
-            document.getElementById('userName').value = '';
-            document.getElementById('stationId').value = '';
-            
-            // 게임 상태 초기화
-            currentUser = '';
-            currentStation = 0;
-            currentQuestionIndex = 0;
-            score = 0;
-            timer = 30;
-            
-            clearInterval(timerInterval);
-        }
-
-        // 축하 효과
-        function createConfetti() {
-            const celebration = document.getElementById('celebration');
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.backgroundColor = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff'][Math.floor(Math.random() * 5)];
-                confetti.style.animationDelay = Math.random() * 3 + 's';
-                celebration.appendChild(confetti);
-                
-                setTimeout(() => confetti.remove(), 3000);
-            }
-        }
-
-        function createMegaConfetti() {
-            const celebration = document.getElementById('celebration');
-            for (let i = 0; i < 200; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.backgroundColor = ['#ffd700', '#feca57', '#ff6b6b'][Math.floor(Math.random() * 3)];
-                confetti.style.animationDelay = Math.random() * 2 + 's';
-                celebration.appendChild(confetti);
-                
-                setTimeout(() => confetti.remove(), 5000);
-            }
-        }
-
-        // 페이지 로드 시 URL 파라미터 확인
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const station = urlParams.get('station');
-            
-            if (station) {
-                document.getElementById('stationId').value = station;
-            }
-        };
-    </script>
-</body>
-
-</html>
-
-
+            const currentUserData = gameData.find(user
 
 
 
