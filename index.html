@@ -852,7 +852,111 @@
             document.getElementById('resultsScreen').classList.remove('hidden');
             document.getElementById('resultsScreen').style.display = 'block';
 
-            const currentUserData = gameData.find(user
+            const currentUserData = gameData.find(user => user.name === currentUser);
+            document.getElementById('finalScore').textContent = 
+                `스테이션 ${currentStation} 점수: ${score}점 | 총점: ${currentUserData?.totalScore || 0}점`;
+
+            const sortedUsers = [...gameData].sort((a, b) => {
+                if (b.totalScore !== a.totalScore) {
+                    return b.totalScore - a.totalScore;
+                }
+                return a.timestamp - b.timestamp;
+            });
+
+            const currentUserRank = sortedUsers.findIndex(user => user.name === currentUser) + 1;
+            document.getElementById('finalRank').textContent = `최종 순위: ${currentUserRank}위`;
+
+            showLeaderboard();
+
+            if (currentUserRank === 1) {
+                createMegaConfetti();
+            }
+        }
+
+        // 리더보드 표시
+        function showLeaderboard() {
+            const sortedUsers = [...gameData].sort((a, b) => {
+                if (b.totalScore !== a.totalScore) {
+                    return b.totalScore - a.totalScore;
+                }
+                return a.timestamp - b.timestamp;
+            });
+
+            const leaderboardList = document.getElementById('leaderboardList');
+            leaderboardList.innerHTML = '';
+
+            sortedUsers.slice(0, 10).forEach((user, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                
+                const rank = index + 1;
+                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}위`;
+                
+                item.innerHTML = `
+                    <span>${medal} ${user.name}</span>
+                    <span>${user.totalScore}점 (${user.completedStations.length}개 완료)</span>
+                `;
+                leaderboardList.appendChild(item);
+            });
+        }
+
+        // 게임 재시작
+        function restartGame() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            
+            // 입력 필드 초기화
+            document.getElementById('userName').value = '';
+            document.getElementById('stationId').value = '';
+            
+            // 게임 상태 초기화
+            currentUser = '';
+            currentStation = 0;
+            currentQuestionIndex = 0;
+            score = 0;
+            timer = 30;
+            
+            clearInterval(timerInterval);
+        }
+
+        // 축하 효과
+        function createConfetti() {
+            const celebration = document.getElementById('celebration');
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff'][Math.floor(Math.random() * 5)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                celebration.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function createMegaConfetti() {
+            const celebration = document.getElementById('celebration');
+            for (let i = 0; i < 200; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = ['#ffd700', '#feca57', '#ff6b6b'][Math.floor(Math.random() * 3)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                celebration.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        // 페이지 로드 시 URL 파라미터 확인
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const station = urlParams.get('station');
+            
+            if (station) {
+                document.getElementById('stationId').value = station;
+            }
+        };
 
 
 
