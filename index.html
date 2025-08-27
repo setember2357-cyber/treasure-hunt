@@ -18,155 +18,426 @@
             color: white;
             overflow-x: hidden;
         }
-
-        /* 오프닝 화면 스타일 */
+        
+        /* 오프닝 스크린 스타일 */
         .opening-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            height: 100vh;
+            background: radial-gradient(circle, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            z-index: 10000;
-            animation: fadeOut 1s ease-in-out 6s forwards;
+            z-index: 9999;
+            animation: fadeOut 0.8s ease-in-out 4.5s forwards;
         }
-
-        .school-title {
+        
+        .opening-content {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .school-name {
             font-size: 4em;
             font-weight: bold;
             color: #fff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
             opacity: 0;
-            transform: translateY(50px) scale(0.5);
-            animation: schoolAppear 2s ease-out 0.5s forwards;
-            margin-bottom: 40px;
-            letter-spacing: 5px;
+            transform: scale(0.3) rotateY(-90deg);
+            animation: schoolAppear 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s forwards;
+            margin-bottom: 30px;
         }
-
-        .club-title {
-            font-size: 6em;
+        
+        .club-name {
+            font-size: 5em;
             font-weight: bold;
             background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
             background-size: 300% 300%;
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
+            -webkit-text-fill-color: transparent;
             opacity: 0;
-            transform: translateY(50px) rotateX(90deg);
-            animation: clubAppear 2s ease-out 2.5s forwards, gradientMove 3s ease-in-out 2.5s infinite;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-            letter-spacing: 8px;
+            transform: translateY(50px);
+            animation: clubAppear 1.2s ease-out 2s forwards, gradientShift 2s ease-in-out 2.5s infinite;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
         }
-
+        
+        .welcome-banner {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 600px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            animation: bannerAppear 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 3.5s forwards;
+        }
+        
+        .welcome-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .game-controller {
+            position: absolute;
+            bottom: 20%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            opacity: 0;
+            transform: rotate(-45deg) scale(0);
+            animation: controllerFloat 2s ease-in-out 4s forwards, controllerBounce 2s ease-in-out 4.5s infinite;
+        }
+        
+        .controller-body {
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(145deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controller-buttons {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+        
+        .button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 2px;
+            display: inline-block;
+        }
+        
+        .button-a { background: #e74c3c; }
+        .button-b { background: #f39c12; }
+        .button-x { background: #3498db; }
+        .button-y { background: #2ecc71; }
+        
+        .dpad {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            width: 25px;
+            height: 25px;
+        }
+        
+        .dpad::before,
+        .dpad::after {
+            content: '';
+            position: absolute;
+            background: #7f8c8d;
+        }
+        
+        .dpad::before {
+            width: 8px;
+            height: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dpad::after {
+            width: 25px;
+            height: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            opacity: 0;
+            animation: cloudFloat 4s ease-in-out infinite;
+        }
+        
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+        }
+        
+        .cloud1 {
+            width: 60px;
+            height: 30px;
+            top: 25%;
+            left: 10%;
+            animation-delay: 1s;
+        }
+        
+        .cloud1::before {
+            width: 25px;
+            height: 25px;
+            top: -10px;
+            left: 10px;
+        }
+        
+        .cloud1::after {
+            width: 35px;
+            height: 35px;
+            top: -15px;
+            right: 8px;
+        }
+        
+        .cloud2 {
+            width: 80px;
+            height: 40px;
+            top: 30%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .cloud2::before {
+            width: 30px;
+            height: 30px;
+            top: -12px;
+            left: 15px;
+        }
+        
+        .cloud2::after {
+            width: 40px;
+            height: 40px;
+            top: -18px;
+            right: 10px;
+        }
+        
+        .star {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            animation: starTwinkle 2s ease-in-out infinite alternate;
+        }
+        
+        .star::before {
+            content: '✦';
+            font-size: 20px;
+            color: #feca57;
+            text-shadow: 0 0 10px #feca57;
+        }
+        
+        .star1 { top: 15%; left: 25%; animation-delay: 0.5s; }
+        .star2 { top: 20%; right: 25%; animation-delay: 1.5s; }
+        .star3 { bottom: 25%; left: 20%; animation-delay: 2.5s; }
+        .star4 { bottom: 30%; right: 30%; animation-delay: 3.5s; }
+        
         .particles {
             position: absolute;
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            pointer-events: none;
         }
-
+        
         .particle {
             position: absolute;
             width: 4px;
             height: 4px;
-            background: rgba(255, 255, 255, 0.8);
+            background: #fff;
             border-radius: 50%;
-            animation: float 6s linear infinite;
+            opacity: 0;
+            animation: particleFloat 3s ease-out infinite;
         }
-
-        .glow-effect {
+        
+        .lightning {
             position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 107, 107, 0.3) 0%, transparent 70%);
-            animation: pulse 3s ease-in-out infinite, rotate 10s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.8) 50%, transparent 51%);
+            opacity: 0;
+            animation: lightningFlash 0.1s ease-out 2.8s;
+        }
+        
+        .glow-ring {
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-        }
-
-        .lightning {
-            position: absolute;
-            width: 2px;
-            height: 100px;
-            background: linear-gradient(to bottom, #fff, transparent);
+            width: 200px;
+            height: 200px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb) border-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
             opacity: 0;
-            animation: lightning 0.1s ease-in-out 4s infinite;
+            animation: ringGlow 1s ease-out 3.2s forwards, ringRotate 2s linear 3.2s infinite;
         }
-
+        
+        /* 애니메이션 키프레임 */
         @keyframes schoolAppear {
             0% {
                 opacity: 0;
-                transform: translateY(50px) scale(0.5);
+                transform: scale(0.3) rotateY(-90deg);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.1) rotateY(10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+        
+        @keyframes clubAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
             }
             50% {
-                opacity: 0.7;
-                transform: translateY(0) scale(1.1);
+                opacity: 0.8;
+                transform: translateY(-10px) scale(1.1);
             }
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
-
-        @keyframes clubAppear {
+        
+        @keyframes bannerAppear {
             0% {
                 opacity: 0;
-                transform: translateY(50px) rotateX(90deg);
+                transform: translateX(-50%) scale(0) rotateY(-180deg);
             }
-            50% {
-                opacity: 0.8;
-                transform: translateY(-10px) rotateX(0deg) scale(1.1);
+            70% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.1) rotateY(10deg);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) rotateX(0deg) scale(1);
+                transform: translateX(-50%) scale(1) rotateY(0deg);
             }
         }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; visibility: hidden; }
-        }
-
-        @keyframes float {
+        
+        @keyframes controllerFloat {
             0% {
+                opacity: 0;
+                transform: rotate(-45deg) scale(0) translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(0deg) scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes controllerBounce {
+            0%, 100% { transform: translateY(0) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(-5deg); }
+        }
+        
+        @keyframes cloudFloat {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: translateX(0) translateY(0); 
+            }
+            50% { 
+                opacity: 0.9; 
+                transform: translateX(20px) translateY(-10px); 
+            }
+        }
+        
+        @keyframes starTwinkle {
+            0% { 
+                opacity: 0.3; 
+                transform: scale(0.8) rotate(0deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1.2) rotate(360deg); 
+            }
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                opacity: 0;
                 transform: translateY(100vh) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
                 opacity: 1;
             }
             100% {
-                transform: translateY(-100px) rotate(360deg);
                 opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
             }
         }
-
-        @keyframes pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.8; }
+        
+        @keyframes lightningFlash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
-
-        @keyframes rotate {
+        
+        @keyframes ringGlow {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes ringRotate {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
-
-        @keyframes lightning {
-            0%, 90%, 100% { opacity: 0; }
-            5%, 85% { opacity: 1; }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { 
+                opacity: 0; 
+                visibility: hidden;
+                pointer-events: none;
+            }
         }
-
-        /* 기존 스타일들 */
+        
+        /* 메인 게임 컨테이너 - 처음에는 숨김 */
+        .main-game {
+            opacity: 0;
+            animation: fadeIn 0.8s ease-in-out 5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -359,6 +630,33 @@
         }
         
         @media (max-width: 600px) {
+            .school-name {
+                font-size: 2.5em;
+            }
+            
+            .club-name {
+                font-size: 3.5em;
+            }
+            
+            .welcome-banner {
+                width: 90%;
+                height: 150px;
+            }
+            
+            .welcome-text {
+                font-size: 1.8em;
+            }
+            
+            .game-controller {
+                width: 60px;
+                height: 60px;
+                right: 10%;
+            }
+            
+            .cloud1, .cloud2 {
+                transform: scale(0.7);
+            }
+            
             .container {
                 padding: 15px;
             }
@@ -369,16 +667,6 @@
             
             .card {
                 padding: 20px;
-            }
-
-            .school-title {
-                font-size: 2.5em;
-                letter-spacing: 2px;
-            }
-
-            .club-title {
-                font-size: 3.5em;
-                letter-spacing: 4px;
             }
         }
         
@@ -404,36 +692,51 @@
             0% { transform: translateY(-100vh) rotate(0deg); }
             100% { transform: translateY(100vh) rotate(360deg); }
         }
-
-        /* 메인 화면 초기 상태 */
-        .main-content {
-            opacity: 0;
-            animation: mainFadeIn 1s ease-in-out 6.5s forwards;
-        }
-
-        @keyframes mainFadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
-    <!-- 오프닝 화면 -->
+    <!-- 오프닝 스크린 -->
     <div class="opening-screen" id="openingScreen">
         <div class="particles" id="particles"></div>
-        <div class="glow-effect"></div>
+        <div class="lightning"></div>
+        <div class="glow-ring"></div>
         
-        <div class="lightning" style="left: 20%; animation-delay: 4s;"></div>
-        <div class="lightning" style="left: 40%; animation-delay: 4.2s;"></div>
-        <div class="lightning" style="left: 60%; animation-delay: 4.1s;"></div>
-        <div class="lightning" style="left: 80%; animation-delay: 4.3s;"></div>
+        <!-- 떠다니는 요소들 -->
+        <div class="floating-elements">
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+            <div class="star star1"></div>
+            <div class="star star2"></div>
+            <div class="star star3"></div>
+            <div class="star star4"></div>
+        </div>
         
-        <div class="school-title">인제고등학교</div>
-        <div class="club-title">REGISTER</div>
+        <!-- 환영 배너 -->
+        <div class="welcome-banner">
+            <div class="welcome-text">어서와라 레지스터다! 🎮</div>
+        </div>
+        
+        <div class="opening-content">
+            <div class="school-name">인제고등학교</div>
+            <div class="club-name">레지스터</div>
+        </div>
+        
+        <!-- 게임 컨트롤러 -->
+        <div class="game-controller">
+            <div class="controller-body">
+                <div class="dpad"></div>
+                <div class="controller-buttons">
+                    <div class="button button-y"></div>
+                    <div class="button button-x"></div><br>
+                    <div class="button button-b"></div>
+                    <div class="button button-a"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 메인 컨텐츠 -->
-    <div class="main-content">
+    <!-- 메인 게임 콘텐츠 -->
+    <div class="main-game">
         <div class="container">
             <!-- 로그인 화면 -->
             <div id="loginScreen">
@@ -508,31 +811,25 @@
     <div class="celebration" id="celebration"></div>
 
     <script>
-        // 오프닝 파티클 효과 생성
+        // 오프닝 애니메이션용 파티클 생성
         function createOpeningParticles() {
             const particles = document.getElementById('particles');
-            
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 30; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.animationDuration = (2 + Math.random() * 2) + 's';
                 particles.appendChild(particle);
+                
+                // 오프닝 종료 후 파티클 제거
+                setTimeout(() => particle.remove(), 5000);
             }
         }
 
-        // 페이지 로드 시 오프닝 효과 시작
+        // 페이지 로드 시 오프닝 애니메이션 시작
         window.addEventListener('load', function() {
             createOpeningParticles();
-            
-            // 6초 후 오프닝 화면 완전 제거
-            setTimeout(() => {
-                const openingScreen = document.getElementById('openingScreen');
-                if (openingScreen) {
-                    openingScreen.remove();
-                }
-            }, 7000);
         });
 
         // 게임 데이터
@@ -957,7 +1254,9 @@
                 document.getElementById('stationId').value = station;
             }
         };
-
+    </script>
+</body>
+</html>
 
 
 
