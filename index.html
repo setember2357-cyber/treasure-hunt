@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏆 인제고</title>
+    <title>🏆 인제고 레지스터</title>
     <style>
         * {
             margin: 0;
@@ -292,6 +292,7 @@
             background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb) border-box;
             mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
+            -webkit-mask-composite: xor;
             opacity: 0;
             animation: ringGlow 1s ease-out 3.2s forwards, ringRotate 2s linear 3.2s infinite;
         }
@@ -432,7 +433,7 @@
             }
         }
         
-        /* 메인 게임 컨테이너 - 처음에는 숨김 */
+        /* 메인 게임 컨테이너 */
         .main-game {
             opacity: 0;
             animation: fadeIn 0.8s ease-in-out 5s forwards;
@@ -877,32 +878,10 @@
     <div class="celebration" id="celebration"></div>
 
     <script>
-        // 전역 게임 데이터 시뮬레이션 (실제 서버 대신)
+        // 전역 게임 데이터 시뮬레이션
         if (!window.globalGameData) {
             window.globalGameData = [];
         }
-
-        // 오프닝 애니메이션용 파티클 생성
-        function createOpeningParticles() {
-            const particles = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 3 + 's';
-                particle.style.animationDuration = (2 + Math.random() * 2) + 's';
-                particles.appendChild(particle);
-                
-                // 오프닝 종료 후 파티클 제거
-                setTimeout(() => particle.remove(), 5000);
-            }
-        }
-
-        // 페이지 로드 시 오프닝 애니메이션 시작
-        window.addEventListener('load', function() {
-            createOpeningParticles();
-            updateLiveStats();
-        });
 
         // 게임 데이터
         const quizData = {
@@ -1028,7 +1007,7 @@
             ]
         };
 
-        // 게임 상태
+        // 게임 상태 변수
         let currentUser = '';
         let currentStation = 0;
         let currentQuestionIndex = 0;
@@ -1036,6 +1015,22 @@
         let timer = 30;
         let timerInterval;
         let liveStatsInterval;
+
+        // 오프닝 애니메이션용 파티클 생성
+        function createOpeningParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+                particles.appendChild(particle);
+                
+                // 오프닝 종료 후 파티클 제거
+                setTimeout(() => particle.remove(), 5000);
+            }
+        }
 
         // 실시간 통계 업데이트
         function updateLiveStats() {
@@ -1105,41 +1100,6 @@
             updateLiveStats(); // 즉시 한 번 업데이트
         }
 
-        // 게임 시작
-        function startQuiz() {
-            const userName = document.getElementById('userName').value.trim();
-            const stationId = parseInt(document.getElementById('stationId').value);
-
-            if (!userName) {
-                alert('이름을 입력해주세요!');
-                return;
-            }
-
-            if (!stationId || stationId < 1 || stationId > 10) {
-                alert('올바른 스테이션 번호(1-10)를 입력해주세요!');
-                return;
-            }
-
-            currentUser = userName;
-            currentStation = stationId;
-            currentQuestionIndex = 0;
-            score = 0;
-
-            // 이미 완료한 스테이션인지 확인
-            const existingUser = window.globalGameData.find(user => user.name === userName);
-            if (existingUser && existingUser.completedStations.includes(stationId)) {
-                alert('이미 완료한 스테이션입니다!');
-                return;
-            }
-
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('quizScreen').style.display = 'block';
-            
-            showQuestion();
-            updateLiveStats();
-            startTimer();
-        }
-
         // 문제 표시
         function showQuestion() {
             const questions = quizData[currentStation];
@@ -1202,14 +1162,6 @@
             updateUserData();
         }
 
-        // 다음 문제
-        function nextQuestion() {
-            currentQuestionIndex++;
-            timer = 30;
-            showQuestion();
-            startTimer();
-        }
-
         // 타이머 시작
         function startTimer() {
             const timerElement = document.getElementById('timer');
@@ -1264,36 +1216,6 @@
             updateLiveStats();
         }
 
-        // 결과 표시
-        function showResults() {
-            clearInterval(timerInterval);
-            
-            document.getElementById('quizScreen').style.display = 'none';
-            document.getElementById('resultsScreen').classList.remove('hidden');
-            document.getElementById('resultsScreen').style.display = 'block';
-
-            const currentUserData = window.globalGameData.find(user => user.name === currentUser);
-            document.getElementById('finalScore').textContent = 
-                `스테이션 ${currentStation} 점수: ${score}점 | 총점: ${currentUserData?.totalScore || 0}점`;
-
-            const sortedUsers = [...window.globalGameData].sort((a, b) => {
-                if (b.totalScore !== a.totalScore) {
-                    return b.totalScore - a.totalScore;
-                }
-                return a.timestamp - b.timestamp;
-            });
-
-            const currentUserRank = sortedUsers.findIndex(user => user.name === currentUser) + 1;
-            document.getElementById('finalRank').textContent = `최종 순위: ${currentUserRank}위`;
-
-            showLeaderboard();
-            startLiveUpdates(); // 결과 화면에서도 실시간 업데이트 시작
-
-            if (currentUserRank === 1) {
-                createMegaConfetti();
-            }
-        }
-
         // 리더보드 표시
         function showLeaderboard() {
             const sortedUsers = [...window.globalGameData].sort((a, b) => {
@@ -1336,34 +1258,6 @@
             });
         }
 
-        // 리더보드 새로고침
-        function refreshLeaderboard() {
-            updateLiveStats();
-            showLeaderboard();
-        }
-
-        // 게임 재시작
-        function restartGame() {
-            clearInterval(timerInterval);
-            clearInterval(liveStatsInterval);
-            
-            document.getElementById('resultsScreen').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'block';
-            
-            // 입력 필드 초기화
-            document.getElementById('userName').value = '';
-            document.getElementById('stationId').value = '';
-            
-            // 게임 상태 초기화
-            currentUser = '';
-            currentStation = 0;
-            currentQuestionIndex = 0;
-            score = 0;
-            timer = 30;
-            
-            startLiveUpdates(); // 로그인 화면에서도 실시간 업데이트
-        }
-
         // 축하 효과
         function createConfetti() {
             const celebration = document.getElementById('celebration');
@@ -1393,21 +1287,126 @@
             }
         }
 
+        // 게임 시작
+        function startQuiz() {
+            const userName = document.getElementById('userName').value.trim();
+            const stationId = parseInt(document.getElementById('stationId').value);
+
+            if (!userName) {
+                alert('이름을 입력해주세요!');
+                return;
+            }
+
+            if (!stationId || stationId < 1 || stationId > 10) {
+                alert('올바른 스테이션 번호(1-10)를 입력해주세요!');
+                return;
+            }
+
+            currentUser = userName;
+            currentStation = stationId;
+            currentQuestionIndex = 0;
+            score = 0;
+
+            // 이미 완료한 스테이션인지 확인
+            const existingUser = window.globalGameData.find(user => user.name === userName);
+            if (existingUser && existingUser.completedStations.includes(stationId)) {
+                alert('이미 완료한 스테이션입니다!');
+                return;
+            }
+
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            
+            showQuestion();
+            updateLiveStats();
+            startTimer();
+        }
+
+        // 다음 문제
+        function nextQuestion() {
+            currentQuestionIndex++;
+            timer = 30;
+            showQuestion();
+            startTimer();
+        }
+
+        // 결과 표시
+        function showResults() {
+            clearInterval(timerInterval);
+            
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').classList.remove('hidden');
+            document.getElementById('resultsScreen').style.display = 'block';
+
+            const currentUserData = window.globalGameData.find(user => user.name === currentUser);
+            document.getElementById('finalScore').textContent = 
+                `스테이션 ${currentStation} 점수: ${score}점 | 총점: ${currentUserData?.totalScore || 0}점`;
+
+            const sortedUsers = [...window.globalGameData].sort((a, b) => {
+                if (b.totalScore !== a.totalScore) {
+                    return b.totalScore - a.totalScore;
+                }
+                return a.timestamp - b.timestamp;
+            });
+
+            const currentUserRank = sortedUsers.findIndex(user => user.name === currentUser) + 1;
+            document.getElementById('finalRank').textContent = `최종 순위: ${currentUserRank}위`;
+
+            showLeaderboard();
+            startLiveUpdates();
+
+            if (currentUserRank === 1) {
+                createMegaConfetti();
+            }
+        }
+
+        // 게임 재시작
+        function restartGame() {
+            clearInterval(timerInterval);
+            clearInterval(liveStatsInterval);
+            
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            
+            // 입력 필드 초기화
+            document.getElementById('userName').value = '';
+            document.getElementById('stationId').value = '';
+            
+            // 게임 상태 초기화
+            currentUser = '';
+            currentStation = 0;
+            currentQuestionIndex = 0;
+            score = 0;
+            timer = 30;
+            
+            startLiveUpdates();
+        }
+
+        // 리더보드 새로고침
+        function refreshLeaderboard() {
+            updateLiveStats();
+            showLeaderboard();
+        }
+
         // 페이지 로드 시 초기화
-        window.onload = function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            createOpeningParticles();
+            updateLiveStats();
+            startLiveUpdates();
+            
             const urlParams = new URLSearchParams(window.location.search);
             const station = urlParams.get('station');
             
             if (station) {
                 document.getElementById('stationId').value = station;
             }
-            
-            // 실시간 업데이트 시작
-            startLiveUpdates();
-        };
+        });
 
         // 페이지 언로드 시 인터벌 정리
-        window.onbeforeunload = function() {
+        window.addEventListener('beforeunload', function() {
             clearInterval(timerInterval);
             clearInterval(liveStatsInterval);
-        };
+        });
+    </script>
+</body>
+</html>
